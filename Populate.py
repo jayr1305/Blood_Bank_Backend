@@ -2,25 +2,26 @@ import mysql.connector
 from data import *
 from random import randint
 
-# mydb = mysql.connector.connect(
-# 	host="localhost",
-# 	user="root",
-# 	# passwd="lakshay",
-# 	passwd="dbms_123",
-# 	database="ConnectGroup"
-# )
-
 mydb = mysql.connector.connect(
-	host="remotemysql.com",
-	user="swMUYUcOTM",
-	passwd="LlyHn4U47w",
-	database="swMUYUcOTM"
+	host="localhost",
+	user="root",
+	passwd="lakshay",
+	# passwd="dbms_123",
+	database="ConnectGroup"
 )
+
+# mydb = mysql.connector.connect(
+# 	host="remotemysql.com",
+# 	user="swMUYUcOTM",
+# 	passwd="LlyHn4U47w",
+# 	database="swMUYUcOTM"
+# )
 
 
 mycursor=mydb.cursor()
 
 Pincodes = ["110010","110020","110030","110040","110050","110060","110070","110090","118900","100200"]
+TotalCapacity = [5000,10000]
 
 def getPincode():
 	return Pincodes[randint(0,9)]
@@ -61,7 +62,8 @@ sqlFormula = "INSERT INTO Blood_Bank VALUES(%s,%s,%s,%s,%s,%s)"
 i=1
 for h in BloodBanks:
 	# print(h)
-	toPut = (h["Name"]+" Blood Bank",getPincode(),i,h["Address"],randint(0,h["TotalCapacity"]),h["TotalCapacity"])
+	TCap = TotalCapacity[randint(0,1)]
+	toPut = (h["Name"]+" Blood Bank",getPincode(),i,h["Address"],randint(0,TCap),TCap)
 	# print(toPut)
 	mycursor.execute(sqlFormula,toPut)
 	i=i+1
@@ -185,5 +187,7 @@ mydb.commit()
 sqlFormula = "CREATE INDEX idx_donated_blood_BG ON Donated_Blood (BloodGroup)"
 mycursor.execute(sqlFormula)
 sqlFormula = "CREATE INDEX idx_available_donor_BG ON Available_Donor (BloodGroup)"
+mycursor.execute(sqlFormula)
+sqlFormula = "CREATE INDEX idx_patients_list_BG ON Patients_List (BloodNeeded)"
 mycursor.execute(sqlFormula)
 mydb.commit()
